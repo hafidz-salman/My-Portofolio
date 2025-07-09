@@ -1,0 +1,279 @@
+/* BASE STYLES - Hanya yang relevan untuk halaman pembuka (index.html) */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f4f4f4; /* Warna default, akan ditimpa id-card-wrapper */
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+    overflow-y: hidden; /* Nonaktifkan scroll vertikal di awal */
+}
+
+/* INITIAL LOADING & SPLASH SCREEN */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    transition: opacity 0.5s ease, background-color 0.5s ease;
+    opacity: 1;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#splash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #007bff; /* Warna splash screen */
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, transform 0.8s ease-out;
+    transform: scale(0);
+    border-radius: 50%;
+}
+
+#splash-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(3);
+}
+
+/* ID CARD WRAPPER & BACKGROUND */
+#id-card-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero-bg.jpg') no-repeat center center/cover;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 1s ease-in-out;
+}
+
+/* Container untuk ID Card agar bisa di-drag */
+#draggable-id-card-group {
+    position: absolute; /* Ini yang akan digerakkan JS */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.1s ease-out; /* Untuk dragging yang halus */
+    cursor: grab; /* Kursor default untuk group yang bisa digeser */
+}
+
+#draggable-id-card-group.dragging {
+    cursor: grabbing;
+}
+
+#draggable-id-card-group.launched {
+    transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
+    opacity: 0;
+}
+
+/* GAYA LANYARD DIHAPUS DARI SINI (misalnya #lanyard-container, .lanyard-strap, #lanyard-clip) */
+
+/* ID CARD STYLING */
+#id-card {
+    width: 320px; /* Lebar ID card */
+    padding: 20px;
+    background-color: #222; /* Background gelap */
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    position: relative; /* Karena sekarang di dalam draggable-group */
+    touch-action: none;
+    color: #fff; /* Warna teks putih */
+    overflow: hidden; /* Untuk membatasi elemen pseudo */
+    z-index: 100; /* ID card di atas background */
+}
+
+/* Pseudo-elements for abstract circles */
+#id-card::before,
+#id-card::after {
+    content: '';
+    position: absolute;
+    background: #ffeb3b; /* Warna kuning */
+    border-radius: 50%;
+    opacity: 0.7;
+    filter: blur(10px);
+    z-index: 0; /* Di belakang konten utama ID card */
+}
+
+#id-card::before {
+    width: 80px;
+    height: 80px;
+    top: 10px;
+    left: 10px;
+}
+
+#id-card::after {
+    width: 120px;
+    height: 120px;
+    bottom: -20px;
+    right: -30px;
+    background: #f50057; /* Warna pink */
+}
+
+/* Abstract shapes */
+.abstract-shape {
+    position: absolute;
+    border-radius: 10px;
+    opacity: 0.6;
+    filter: blur(5px);
+    z-index: 0; /* Di belakang konten utama ID card */
+}
+
+.shape-1 {
+    width: 150px;
+    height: 30px;
+    background: #00e5ff; /* Warna cyan */
+    top: 40px;
+    right: -40px;
+    transform: rotate(-30deg);
+}
+
+.shape-2 {
+    width: 40px;
+    height: 100px;
+    background: #76ff03; /* Warna hijau */
+    bottom: 30px;
+    left: -20px;
+    transform: rotate(45deg);
+}
+
+#id-card-photo-container {
+    width: 100px; /* Ukuran foto lebih kecil */
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 10px auto 10px auto; /* Margin atas lebih kecil */
+    border: 4px solid #ddd; /* Border putih atau abu-abu muda */
+    position: relative;
+    background: linear-gradient(45deg, #ffeb3b, #f50057); /* Contoh gradient background foto */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1; /* Di atas elemen pseudo/shape */
+}
+
+#id-card-photo-container::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+#id-card-photo {
+    width: 90%; /* Sesuaikan ukuran foto agar pas di tengah kontainer */
+    height: 90%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%; /* Pastikan gambar juga lingkaran */
+    z-index: 2; /* Di atas pseudo-element container */
+}
+
+.id-card-info {
+    z-index: 1; /* Pastikan info teks di atas elemen pseudo/shape */
+    position: relative; /* Penting untuk z-index */
+}
+
+.id-card-info h3 {
+    margin: 5px 0; /* Margin lebih kecil */
+    font-size: 1.4rem; /* Ukuran font lebih kecil */
+    font-weight: bold;
+    color: #fff; /* Pastikan teks nama berwarna putih */
+}
+
+.id-card-info p {
+    margin: 2px 0 10px 0; /* Margin lebih kecil */
+    font-size: 0.9em; /* Ukuran font lebih kecil */
+    color: #ccc; /* Warna teks info */
+}
+
+.id-card-info p a { /* Gaya link di dalam info ID card */
+    color: #00e5ff; /* Warna link di ID card (cyan) */
+    text-decoration: underline;
+}
+
+.id-card-info p a:hover {
+    color: #00aaff;
+}
+
+
+
+/* Gaya untuk Tali Ketapel (masih ada di JS, tapi tidak ada elemen HTML ini) */
+#id-card-sling {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.7); /* Warna tali lebih terang agar kontras dengan background gelap ID Card */
+    height: 4px; /* Ketebalan tali */
+    transform-origin: left center; /* Titik putar tali */
+    z-index: 99; /* Di bawah ID card */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease; /* Transisi saat muncul/hilang */
+}
+
+#id-card-sling.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive Design untuk Halaman Pembuka (index.html) */
+@media (max-width: 768px) {
+    #id-card {
+        width: 280px;
+        padding: 15px;
+    }
+    #id-card::before {
+        width: 60px;
+        height: 60px;
+        top: 5px;
+        left: 5px;
+    }
+    #id-card::after {
+        width: 100px;
+        height: 100px;
+        bottom: -10px;
+        right: -20px;
+    }
+    .shape-1 {
+        width: 120px;
+        height: 25px;
+        top: 30px;
+        right: -30px;
+    }
+    .shape-2 {
+        width: 30px;
+        height: 80px;
+        bottom: 20px;
+        left: -15px;
+    }
+    #id-card-photo-container {
+        width: 80px;
+        height: 80px;
+    }
+}
